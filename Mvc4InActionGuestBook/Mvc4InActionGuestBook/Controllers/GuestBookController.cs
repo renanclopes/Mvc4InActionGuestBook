@@ -18,8 +18,8 @@ namespace Mvc4InActionGuestBook.Controllers
                                      orderby entry.DateAdded descending
                                      select entry).Take(20);
 
-            ViewBag.Entries = mostRecentEntries.ToList();
-            return View();
+            var model = mostRecentEntries.ToList();
+            return View(model);
         }
         public ActionResult Create()
         {
@@ -36,5 +36,16 @@ namespace Mvc4InActionGuestBook.Controllers
 
             return RedirectToAction("Index");
         }
+
+        public ViewResult Show(int id)
+        {
+            var entry = _db.Entries.Find(id);
+
+            bool hasPermission = User.Identity.Name == entry.Name;
+            ViewData["hasPermission"] = hasPermission;
+
+            return View(entry);
+        }
+
     }
 }
